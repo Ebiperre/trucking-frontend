@@ -5,44 +5,53 @@ import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
+// Fix for Leaflet marker icons - this is the correct approach
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 
-// Fix for Leaflet marker icons
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+// Create custom icon manually - the require approach may be causing issues
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  iconRetinaUrl: iconRetina,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
-// Custom icons
-// const startIcon = new L.Icon({
-//   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
+// Set the default icon for all markers
+L.Marker.prototype.options.icon = DefaultIcon;
 
-// const endIcon = new L.Icon({
-//   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
+// Custom icons for different marker types
+const startIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
-// const restIcon = new L.Icon({
-//   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-//   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-//   iconSize: [25, 41],
-//   iconAnchor: [12, 41],
-//   popupAnchor: [1, -34],
-//   shadowSize: [41, 41]
-// });
+const pickupIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const dropoffIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 function RouteMap() {
   const { tripId } = useParams();
@@ -135,7 +144,7 @@ function RouteMap() {
     routePoints.push(pickupCoords);
     routePoints.push(dropoffCoords);
     
-    // Just use the default icon for all markers - simplest approach
+    // Use marker points with types
     markerPoints.push({
       position: startCoords,
       name: trip.current_location,
@@ -171,24 +180,6 @@ function RouteMap() {
     });
   }
   
-  // Group segments by type for the summary
-//   const segmentSummary = segments.reduce((acc, segment) => {
-//     const type = segment.segment_type;
-//     if (!acc[type]) {
-//       acc[type] = {
-//         count: 0,
-//         time: 0,
-//         distance: 0
-//       };
-//     }
-    
-//     acc[type].count += 1;
-//     acc[type].time += segment.estimated_drive_time;
-//     acc[type].distance += segment.distance_miles;
-    
-//     return acc;
-//   }, {});
-  
   // Calculate total trip stats
   const totalDrivingHours = segments
     .filter(segment => segment.segment_type === 'driving')
@@ -202,6 +193,20 @@ function RouteMap() {
     .filter(segment => segment.segment_type === 'rest' || segment.segment_type === 'break')
     .reduce((sum, segment) => sum + segment.estimated_drive_time, 0);
   
+  // Get icon based on marker type
+  const getIconForType = (type) => {
+    switch(type) {
+      case 'start':
+        return startIcon;
+      case 'pickup':
+        return pickupIcon;
+      case 'dropoff':
+        return dropoffIcon;
+      default:
+        return DefaultIcon;
+    }
+  };
+  
   return (
     <div className="row">
       <div className="col-md-8">
@@ -214,39 +219,51 @@ function RouteMap() {
           </div>
           <div className="card-body p-0">
             <div className="map-container">
-              <MapContainer center={[39.8283, -98.5795]} zoom={4} style={{ height: '500px', width: '100%' }}>
+              {/* Add key prop to force re-render when data changes */}
+              <MapContainer 
+                key={`map-${tripId}`}
+                center={[39.8283, -98.5795]} 
+                zoom={4} 
+                style={{ height: '500px', width: '100%' }}
+                whenCreated={(mapInstance) => {
+                  // Optional: Add this to help with debugging
+                  console.log("Map created:", mapInstance);
+                }}
+              >
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 
                 {/* Draw route line */}
-                <Polyline 
-                  positions={routePoints} 
-                  color="#074554" 
-                  weight={5}
-                  opacity={0.7}
-                />
+                {routePoints.length > 0 && (
+                  <Polyline 
+                    positions={routePoints} 
+                    color="#074554" 
+                    weight={5}
+                    opacity={0.7}
+                  />
+                )}
                 
                 {/* Mark key locations */}
                 {markerPoints.map((point, index) => (
-  <Marker 
-    key={index} 
-    position={point.position}
-    // Don't specify any icon prop here
-  >
-    <Popup>
-      <div className={`popup-content popup-${point.type}`}>
-        <strong>{point.type.toUpperCase()}: {point.name}</strong>
-        {point.duration && (
-          <div className="mt-1">
-            Duration: {point.duration.toFixed(1)} hours
-          </div>
-        )}
-      </div>
-    </Popup>
-  </Marker>
-))}
+                  <Marker 
+                    key={`marker-${index}`} 
+                    position={point.position}
+                    icon={getIconForType(point.type)}
+                  >
+                    <Popup>
+                      <div className={`popup-content popup-${point.type}`}>
+                        <strong>{point.type.toUpperCase()}: {point.name}</strong>
+                        {point.duration && (
+                          <div className="mt-1">
+                            Duration: {point.duration.toFixed(1)} hours
+                          </div>
+                        )}
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
               </MapContainer>
             </div>
           </div>
