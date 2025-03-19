@@ -1,0 +1,131 @@
+:root {
+    --primary-color: #074554;
+    --secondary-color: #051930;
+    --primary-light: #0a5c70;
+    --secondary-light: #0a2b4d;
+    --accent-color: #f0f4f8;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --success: #2e7d32;
+    --warning: #ff9800;
+    --danger: #d32f2f;
+    --gray-light: #e0e0e0;
+    --gray-medium: #9e9e9e;
+  }
+  
+  .bg-primary {
+    background-color: var(--primary-color) !important;
+  }
+  
+  .bg-secondary {
+    background-color: var(--secondary-color) !important;
+  }
+  
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  .text-secondary {
+    color: var(--secondary-color) !important;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-light) !important;
+    border-color: var(--primary-light) !important;
+  }
+  
+  .btn-secondary {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--secondary-light) !important;
+    border-color: var(--secondary-light) !important;
+  }
+  
+  .card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+  
+  .card-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  
+  .navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Status colors for ELD logs */
+  .status-driving {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light);
+  }
+  
+  .status-on-duty {
+    background-color: var(--warning) !important;
+  }
+  
+  .status-off-duty {
+    background-color: var(--gray-medium) !important;
+  }
+  
+  .status-sleeper {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-light);
+  }
+  
+  /* Loading spinner */
+  .spinner-border {
+    color: var(--primary-color);
+  }
+  
+  /* Map custom styles */
+  .map-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ELD log grid */
+  .eld-grid {
+    border: 1px solid var(--gray-light);
+  }
+  
+  .eld-grid th {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+  }
+  
+  /* Route segment styles */
+  .segment-item {
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+  }
+  
+  .segment-item:hover {
+    background-color: var(--accent-color);
+  }
+  
+  .segment-driving {
+    border-left-color: var(--primary-color);
+  }
+  
+  .segment-rest {
+    border-left-color: var(--secondary-color);
+  }
+  
+  .segment-fuel {
+    border-left-color: var(--warning);
+  }
+  
+  .segment-pickup, .segment-dropoff {
+    border-left-color: var(--success);
+  }
