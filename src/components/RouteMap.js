@@ -73,10 +73,10 @@ function RouteMap() {
         setLoading(true);
         setError('');
         
-        const tripResponse = await axios.get(`http://localhost:8000/api/trips/${tripId}/`);
+        const tripResponse = await axios.get(`https://eld-log.onrender.com/api/trips/${tripId}/`);
         setTrip(tripResponse.data);
         
-        const segmentsResponse = await axios.get(`http://localhost:8000/api/trips/${tripId}/segments/`);
+        const segmentsResponse = await axios.get(`https://eld-log.onrender.com/api/trips/${tripId}/segments/`);
         setSegments(segmentsResponse.data);
       } catch (error) {
         console.error('Error fetching trip data:', error);

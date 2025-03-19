@@ -30,11 +30,11 @@ function TripForm() {
     
     try {
       // Create trip
-      const response = await axios.post('http://localhost:8000/api/trips/', formData);
+      const response = await axios.post('https://eld-log.onrender.com/api/trips/', formData);
       const tripId = response.data.id;
       
       // Plan the route
-      await axios.post(`http://localhost:8000/api/trips/${tripId}/plan_route/`);
+      await axios.post(`https://eld-log.onrender.com/api/trips/${tripId}/plan_route/`);
       
       // Navigate to the route map
       navigate(`/route/${tripId}`);

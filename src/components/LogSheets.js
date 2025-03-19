@@ -16,10 +16,10 @@ function LogSheets() {
         setLoading(true);
         setError('');
         
-        const tripResponse = await axios.get(`http://localhost:8000/api/trips/${tripId}/`);
+        const tripResponse = await axios.get(`https://eld-log.onrender.com/api/trips/${tripId}/`);
         setTrip(tripResponse.data);
         
-        const logsResponse = await axios.get(`http://localhost:8000/api/trips/${tripId}/logs/`);
+        const logsResponse = await axios.get(`https://eld-log.onrender.com/api/trips/${tripId}/logs/`);
         
         // Group logs by date
         const groupedLogs = {};
