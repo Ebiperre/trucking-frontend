@@ -1,70 +1,148 @@
-# Getting Started with Create React App
+# ELD Route Planner
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack application that plans truck routes in compliance with Hours of Service (HOS) regulations and generates Electronic Logging Device (ELD) logs.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+This application takes trip details as input and provides:
+1. A map showing the planned route with rest and fuel stops
+2. Daily ELD log sheets for the entire trip
 
-### `npm start`
+The route planning algorithm ensures compliance with Federal Motor Carrier Safety Administration (FMCSA) Hours of Service regulations for property-carrying drivers.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Route Planning**: Calculate optimal routes with required rest periods based on HOS regulations
+- **Interactive Map**: Visualize the complete route with markers for start, pickup, dropoff, rest stops, and fuel stops
+- **ELD Log Generation**: Create accurate driver log sheets for each day of the trip
+- **HOS Compliance**: Enforce all key HOS regulations:
+  - 11-hour driving limit
+  - 14-hour duty window
+  - 70-hour/8-day cycle
+  - Required 30-minute breaks
+  - 10-hour rest periods
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend
+- Django (Python web framework)
+- Django REST Framework (API)
+- Geopy (distance calculations)
 
-### `npm run build`
+### Frontend
+- React (UI library)
+- React Router (navigation)
+- Leaflet (mapping)
+- Bootstrap (styling)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Backend Setup
+```bash
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install dependencies
+pip install -r requirements.txt
 
-### `npm run eject`
+# Run migrations
+cd trucking_app
+python manage.py migrate
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Start the Django server
+python manage.py runserver
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend Setup
+```bash
+# Navigate to frontend directory
+cd trucking-frontend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Install dependencies
+npm install
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Start the React application
+npm start
+```
 
-## Learn More
+## Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Enter trip details:
+   - Current location
+   - Pickup location
+   - Dropoff location
+   - Current cycle hours used
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. View the route plan with:
+   - Interactive map
+   - Trip summary
+   - Detailed route segments
 
-### Code Splitting
+3. Access the ELD log sheets showing:
+   - Driving periods
+   - On-duty (not driving) periods
+   - Off-duty periods
+   - Daily summaries
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Algorithm
 
-### Analyzing the Bundle Size
+The route planning algorithm:
+1. Calculates distances between locations
+2. Creates initial driving segments
+3. Applies HOS regulations to insert required breaks:
+   - 30-minute breaks after 8 hours of driving
+   - 10-hour rest periods after 11 hours of driving
+   - Limits on the 14-hour duty window
+   - Tracking of 70-hour/8-day limit
+4. Adds fuel stops every 1,000 miles
+5. Accounts for 1-hour pickup and dropoff times
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## HOS Regulations Implemented
 
-### Making a Progressive Web App
+- **11-Hour Driving Limit**: May drive a maximum of 11 hours after 10 consecutive hours off duty
+- **14-Hour Limit**: May not drive beyond the 14th consecutive hour after coming on duty
+- **Rest Break Requirements**: Must take a 30-minute break after 8 cumulative hours of driving time
+- **60/70-Hour Limit**: May not drive after 60/70 hours on duty in 7/8 consecutive days
+- **Sleeper Berth Provision**: Drivers can split their required 10 hours off duty into two periods
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## API Endpoints
 
-### Advanced Configuration
+### `/api/trips/`
+- `POST`: Create a new trip
+- `GET`: List all trips
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### `/api/trips/{id}/`
+- `GET`: Retrieve details for a specific trip
 
-### Deployment
+### `/api/trips/{id}/plan_route/`
+- `POST`: Generate a route plan with HOS-compliant segments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### `/api/trips/{id}/segments/`
+- `GET`: Get all route segments for a trip
 
-### `npm run build` fails to minify
+### `/api/trips/{id}/logs/`
+- `GET`: Get all ELD logs for a trip
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Future Improvements
+
+- Real-time GPS tracking integration
+- Weather and traffic condition monitoring
+- Optimization for fuel efficiency
+- Multiple stop/waypoint planning
+- Team driver support
+- Integration with ELD hardware devices
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- FMCSA for HOS regulations documentation
+- OpenStreetMap for mapping data
+- Leaflet for the mapping library
+
+---
+
+*This application is designed for educational and planning purposes. Always verify compliance with current FMCSA regulations for actual commercial driving operations.*

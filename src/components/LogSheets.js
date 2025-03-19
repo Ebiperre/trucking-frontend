@@ -100,13 +100,13 @@ function LogSheets() {
       ) : (
         Object.entries(logs).map(([date, dailyLogs]) => (
           <div key={date} className="card mb-4 shadow-sm">
-            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div className="card-header text-black d-flex justify-content-between align-items-center">
               <h4 className="mb-0">
                 <i className="bi bi-calendar-date me-2"></i>
                 Log Sheet for {new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </h4>
-              <button className="btn btn-light btn-sm" onClick={() => window.print()}>
-                <i className="bi bi-printer me-1"></i> Print
+              <button className="btn btn-light btn-sm bg-secondary text-white p-2" onClick={() => window.print()}>
+                 Print
               </button>
             </div>
             <div className="card-body p-4">
@@ -394,7 +394,7 @@ function LogSheets() {
   );
 }
 
-// Helper function to calculate hours for a specific status
+
 // Helper function to calculate hours for a specific status
 function calculateHours(logs, status) {
     let totalMinutes = 0;
