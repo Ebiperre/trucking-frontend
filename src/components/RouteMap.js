@@ -204,10 +204,9 @@ function RouteMap() {
     <div className="row">
       <div className="col-md-8">
         <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <div className="card-header text-black d-flex justify-content-between align-items-center">
             <h4 className="mb-0"><i className="bi bi-map me-2"></i>Route Map</h4>
-            <Link to={`/logs/${tripId}`} className="btn btn-light btn-sm">
-              <i className="bi bi-journal-text me-1"></i>
+            <Link to={`/logs/${tripId}`} className="btn btn-light btn-sm bg-secondary text-white p-2">
               View ELD Logs
             </Link>
           </div>
@@ -252,7 +251,7 @@ function RouteMap() {
         </div>
         
         <div className="card shadow-sm">
-          <div className="card-header bg-secondary text-white">
+          <div className="card-header text-black">
             <h5 className="mb-0"><i className="bi bi-speedometer2 me-2"></i>Trip Summary</h5>
           </div>
           <div className="card-body">
@@ -282,7 +281,7 @@ function RouteMap() {
       
       <div className="col-md-4">
         <div className="card shadow-sm mb-4">
-          <div className="card-header bg-primary text-white">
+          <div className="card-header text-black">
             <h5 className="mb-0"><i className="bi bi-geo-alt me-2"></i>Route Details</h5>
           </div>
           <div className="card-body">
@@ -318,7 +317,7 @@ function RouteMap() {
         </div>
         
         <div className="card shadow-sm">
-          <div className="card-header bg-secondary text-white">
+          <div className="card-header text-black">
             <h5 className="mb-0"><i className="bi bi-list-check me-2"></i>Route Segments</h5>
           </div>
           <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>

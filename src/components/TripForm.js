@@ -50,7 +50,7 @@ function TripForm() {
     <div className="row justify-content-center">
       <div className="col-md-8">
         <div className="card shadow-sm">
-          <div className="card-header bg-primary text-white">
+          <div className="card-header text-black">
             <h4 className="mb-0"><i className="bi bi-pin-map me-2"></i>Plan Your Truck Route</h4>
           </div>
           <div className="card-body p-4">

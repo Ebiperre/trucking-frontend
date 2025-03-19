@@ -15,9 +15,8 @@ function Navigation() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
+            <li className="nav-item rounded-3 border border-white">
               <Link className="nav-link" to="/">
-                <i className="bi bi-plus-circle me-1"></i>
                 New Trip
               </Link>
             </li>
