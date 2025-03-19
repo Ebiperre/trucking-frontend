@@ -1,10 +1,8 @@
 import axios from 'axios';
 
 // Update this URL for production deployment
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
 
-// For production, use the deployed URL
-// const API_URL = 'https://your-backend-url.com/api';
 
 const apiService = {
   // Trip endpoints
